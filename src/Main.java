@@ -1,38 +1,51 @@
-import java.io.IOException;
 import java.util.Scanner;
 class Main {
-    public static String calc(String input) throws IOException {
-        Scanner inputString = new Scanner(System.in);
-        String input1 = inputString.nextLine();
-        String[] calc_inputString = input1.split(" ");
-        if (calc_inputString.length != 3) {
-            throw new IOException();
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        try {
+            String result = calc(input);
+            System.out.println(result);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
         }
-        return null;
     }
-    public static void main(String[] args) throws IOException {
-        Scanner inputString = new Scanner(System.in);
-        String input1 = inputString.nextLine();
-        String[] calc_inputString = input1.split(" ");
-        String operation = calc_inputString[1];
-        if (calc_inputString.length != 3) {
-            throw new IOException();
+    public static String calc(String input) {
+        String[] tokens = input.split(" ");
+        if (tokens.length != 3) {
+            throw new IllegalArgumentException("//т.к. строка не является математической операцией или формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
         }
-        int value1 = 0;
-        int value2 = 0;
-        value1 = Integer.parseInt(calc_inputString[0]);
-        value2 = Integer.parseInt(calc_inputString[2]);
-        int result = 0;
-        if (value1 < 1 | value1 > 10 | value2 < 1 | value2 > 10) {
-            throw new IOException();
+        int a;
+        int b;
+        try {
+            a = Integer.parseInt(tokens[0]);
+            b = Integer.parseInt(tokens[2]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("//т.к. формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
         }
-        switch (operation) {
-            case "-" -> result = value1 - value2;
-            case "+" -> result = value1 + value2;
-            case "*" -> result = value1 * value2;
-            case "/" -> result = value1 / value2;
-            default -> throw new IOException();
+        if (a < 1 || a > 10 || b < 1 || b > 10){
+            throw new IllegalArgumentException("//числа должны быть в диапазоне от 1 до 10 включительно");
         }
-        System.out.print(result);
+        int result;
+        switch (tokens[1]) {
+            case "+":
+                result = a + b;
+                break;
+            case "-":
+                result = a - b;
+                break;
+            case "*":
+                result = a * b;
+                break;
+            case "/":
+                if (b == 0) {
+                    throw new IllegalArgumentException("//деление на ноль");
+                }
+                result = a / b;
+                break;
+            default:
+                throw new IllegalArgumentException("Неподдерживаемая операция: " + tokens[1]);
+        }
+        return String.valueOf(result);
     }
 }
